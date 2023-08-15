@@ -35,3 +35,14 @@ FROM
 	PortfolioProject.dbo.CovidDeaths
 WHERE location LIKE '%states%'
 ORDER BY 1,2
+
+-- Countries with highest infection rates compared to population
+SELECT 
+	Location,
+	population,
+	MAX(total_cases) AS HighestInfectionCount,
+	MAX(total_cases/population)*100 AS PercentPopulationInfected
+FROM
+	PortfolioProject.dbo.CovidDeaths
+	GROUP BY location, population
+	ORDER BY PercentPopulationInfected DESC
