@@ -56,3 +56,15 @@ FROM
 	WHERE continent IS NOT NULL
 	GROUP BY location
 	ORDER BY TotalDeathCount DESC
+
+-- Analyzing the data by continent
+
+SELECT
+	Continent,
+	MAX(CAST(total_deaths AS INT)) AS TotalDeathCount
+FROM
+	PortfolioProject.dbo.CovidDeaths
+	WHERE continent IS NOT NULL
+	GROUP BY continent
+	ORDER BY TotalDeathCount DESC
+
