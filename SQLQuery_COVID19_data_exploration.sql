@@ -58,6 +58,7 @@ FROM
 	ORDER BY TotalDeathCount DESC
 
 -- Analyzing the data by continent
+-- Showing continents with the highest death counts
 
 SELECT
 	location,
@@ -68,3 +69,14 @@ FROM
 	GROUP BY location
 	ORDER BY TotalDeathCount DESC
 
+-- Global numbers across the world
+SELECT 
+	date,
+	SUM(new_cases) AS total_cases,
+	SUM(CAST(new_deaths AS INT)) AS total_deaths,
+	SUM(cast(new_deaths AS INT))/SUM(New_Cases)*100 AS DeathPercentage 
+FROM
+	PortfolioProject.dbo.CovidDeaths
+	WHERE continent IS NOT null
+	GROUP BY DATE
+	ORDER BY 1,2
