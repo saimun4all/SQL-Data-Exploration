@@ -113,3 +113,19 @@ WHERE dea.continent IS NOT NULL
 )
 SELECT *, (rolling_people_vaccinated/Population)*100
 FROM PopvsVac
+
+-- Create View
+
+Create View PercentPopulationVaccinated AS
+SELECT dea.continent, dea.location, dea.date, population, vac.new_vaccinations, 
+SUM(CAST(vac.new_vaccinations AS int)) OVER (Partition by dea.location ORDER BY dea.location,
+	dea.Date) AS rolling_people_vaccinated
+	FROM PortfolioProject.dbo.CovidDeaths dea 
+	JOIN PortfolioProject.dbo.CovidVaccinations vac
+	ON dea.location = vac.location
+	AND dea.date = vac.date
+	WHERE dea.continent IS NOT NULL
+
+SELECT * 
+FROM PercentPopulationVaccinated
+
