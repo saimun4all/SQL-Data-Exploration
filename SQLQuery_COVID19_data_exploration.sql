@@ -85,3 +85,31 @@ SELECT *
 	FROM PortfolioProject.dbo.CovidDeaths dea
 	JOIN PortfolioProject.dbo.CovidVaccinations vac
 	ON dea.location = vac.location
+
+-- Analyzing Total Population vs Vaccinations
+
+SELECT dea.continent, dea.location, dea.date, population, vac.new_vaccinations, 
+SUM(CAST(vac.new_vaccinations AS int)) OVER (Partition by dea.location ORDER BY dea.location,
+	dea.Date) AS rolling_people_vaccinated,
+	(rolling_people_vaccinated/population)*100
+	FROM PortfolioProject.dbo.CovidDeaths dea 
+	JOIN PortfolioProject.dbo.CovidVaccinations vac
+	ON dea.location = vac.location
+	AND dea.date = vac.date
+WHERE dea.continent IS NOT NULL
+ORDER BY 2,3
+
+-- Use CTE
+WITH PopvsVac (Continent, Location, Date, Population, new_vaccinations,rolling_people_vaccinated)
+AS
+(SELECT dea.continent, dea.location, dea.date, population, vac.new_vaccinations, 
+SUM(CAST(vac.new_vaccinations AS int)) OVER (Partition by dea.location ORDER BY dea.location,
+	dea.Date) AS rolling_people_vaccinated
+	FROM PortfolioProject.dbo.CovidDeaths dea 
+	JOIN PortfolioProject.dbo.CovidVaccinations vac
+	ON dea.location = vac.location
+	AND dea.date = vac.date
+WHERE dea.continent IS NOT NULL
+)
+SELECT *, (rolling_people_vaccinated/Population)*100
+FROM PopvsVac
