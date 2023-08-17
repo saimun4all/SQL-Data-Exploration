@@ -71,12 +71,17 @@ FROM
 
 -- Global numbers across the world
 SELECT 
-	date,
 	SUM(new_cases) AS total_cases,
 	SUM(CAST(new_deaths AS INT)) AS total_deaths,
 	SUM(cast(new_deaths AS INT))/SUM(New_Cases)*100 AS DeathPercentage 
 FROM
 	PortfolioProject.dbo.CovidDeaths
 	WHERE continent IS NOT null
-	GROUP BY DATE
 	ORDER BY 1,2
+
+-- Joining the CovidDeaths table with CovidVaccinations table
+
+SELECT * 
+	FROM PortfolioProject.dbo.CovidDeaths dea
+	JOIN PortfolioProject.dbo.CovidVaccinations vac
+	ON dea.location = vac.location
